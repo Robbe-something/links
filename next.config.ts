@@ -8,6 +8,9 @@ const nextConfig: NextConfig = {
                 destination: '/home'
             }
         ]
+    },
+    experimental: {
+        ppr: 'incremental',
     }
 };
 

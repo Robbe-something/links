@@ -37,7 +37,7 @@ export default function Page() {
                         <FormItem>
                             <FormLabel>email</FormLabel>
                             <FormControl>
-                                <Input type="email" placeholder="example@email.com" {...field} />
+                                <Input type="text" placeholder="example@email.com" className="max-w-xs focus-visible:ring-[3px] focus-visible:ring-blue-500/20 focus-visible:border-blue-500" {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -50,7 +50,7 @@ export default function Page() {
                         <FormItem>
                             <FormLabel>password</FormLabel>
                             <FormControl>
-                                <Input type="password" {...field} />
+                                <Input type="password" className="max-w-xs focus-visible:ring-[3px] focus-visible:ring-blue-500/20 focus-visible:border-blue-500" {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -63,7 +63,7 @@ export default function Page() {
                         <FormItem>
                             <FormLabel>confirm password</FormLabel>
                             <FormControl>
-                                <Input type="password" {...field} />
+                                <Input type="password" className="max-w-xs focus-visible:ring-[3px] focus-visible:ring-blue-500/20 focus-visible:border-blue-500" {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -76,7 +76,7 @@ export default function Page() {
                         <FormItem>
                             <FormLabel>First Name</FormLabel>
                             <FormControl>
-                                <Input type="text" {...field} />
+                                <Input type="text" className="max-w-xs focus-visible:ring-[3px] focus-visible:ring-blue-500/20 focus-visible:border-blue-500" {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -89,7 +89,7 @@ export default function Page() {
                         <FormItem>
                             <FormLabel>Last Name</FormLabel>
                             <FormControl>
-                                <Input type="text" {...field} />
+                                <Input type="text" className="max-w-xs focus-visible:ring-[3px] focus-visible:ring-blue-500/20 focus-visible:border-blue-500" {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>

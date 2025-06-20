@@ -7,21 +7,31 @@ import { headers } from "next/headers";
 import { createClient } from '@/utils/supabase/server'
 import {SignInWithPasswordCredentials, SignUpWithPasswordCredentials} from "@supabase/auth-js";
 import * as z from 'zod/v4';
-import {getSignUpSchema} from "@/utils/supabase/auth_schema";
+import {getSignInSchema, getSignUpSchema} from "@/utils/supabase/auth_schema";
 
 const signUpSchema = getSignUpSchema()
+const signInSchema = getSignInSchema()
 
-export async function login(formData: FormData) {
+export async function login(data: z.infer<typeof signInSchema>) {
+    const validatedFields = signInSchema.safeParse({
+        ...data,
+    })
+
+    if (!validatedFields.success) {
+        // this should in theory never happen as the data is already validated client side
+        redirect('/error')
+    }
+
     const supabase = await createClient()
 
     // type-casting here for convenience
     // in practice, you should validate your inputs
-    const data: SignInWithPasswordCredentials = {
-        email: formData.get('email') as string,
-        password: formData.get('password') as string,
+    const signInData: SignInWithPasswordCredentials = {
+        email: data.email,
+        password: data.password,
     }
 
-    const { error } = await supabase.auth.signInWithPassword(data)
+    const { error } = await supabase.auth.signInWithPassword(signInData)
 
     if (error) {
         redirect('/error')
@@ -38,12 +48,9 @@ export async function signup(data: z.infer<typeof signUpSchema>) {
 
     const redirectUrl = `https://${(await headers()).get("X-Forwarded-Host")}/email_verify`
 
-    console.log(redirectUrl)
-
     if (!validatedFields.success) {
-        return {
-            errors: z.treeifyError(validatedFields.error).properties
-        }
+        // this should in theory never happen as the data is already validated client side
+        redirect('/error')
     }
 
     const supabase = await createClient()
@@ -79,4 +86,11 @@ export async function loginWithCode(code: string) {
         redirect('/error')
     }
     console.log("exchanged code for session:", data)
+}
+
+export async function logout() {
+    const supabase = await createClient()
+    await supabase.auth.signOut()
+    revalidatePath('/', 'layout')
+    redirect('/login')
 }

@@ -1,4 +1,7 @@
+export const experimental_ppr = true
+
 import Navbar from "@/ui/navbar";
+
 export default function DefaultLayout({children}: Readonly<{
     children: React.ReactNode;
 }>) {
