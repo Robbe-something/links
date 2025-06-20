@@ -36,6 +36,8 @@ export async function signup(data: z.infer<typeof signUpSchema>) {
         ...data,
     })
 
+    console.log((await headers()).get("X-Forwarded-Host"))
+
     if (!validatedFields.success) {
         return {
             errors: z.treeifyError(validatedFields.error).properties
@@ -50,7 +52,7 @@ export async function signup(data: z.infer<typeof signUpSchema>) {
         email: data.email,
         password: data.password,
         options: {
-            emailRedirectTo: `https://${(await headers()).get("Host")}/email_verify`,
+            emailRedirectTo: `https://${(await headers()).get("X-Forwarded-Host")}/email_verify`,
             data: {
                 first_name: data.firstName,
                 last_name: data.lastName,
