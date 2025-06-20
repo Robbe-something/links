@@ -2,9 +2,14 @@
 
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
+import { headers } from "next/headers";
 
 import { createClient } from '@/utils/supabase/server'
 import {SignInWithPasswordCredentials, SignUpWithPasswordCredentials} from "@supabase/auth-js";
+import * as z from 'zod/v4';
+import {getSignUpSchema} from "@/utils/supabase/auth_schema";
+
+const signUpSchema = getSignUpSchema()
 
 export async function login(formData: FormData) {
     const supabase = await createClient()
@@ -18,8 +23,6 @@ export async function login(formData: FormData) {
 
     const { error } = await supabase.auth.signInWithPassword(data)
 
-    console.log("iets")
-
     if (error) {
         redirect('/error')
     }
@@ -28,22 +31,52 @@ export async function login(formData: FormData) {
     redirect('/')
 }
 
-export async function signup(formData: FormData) {
+export async function signup(data: z.infer<typeof signUpSchema>) {
+    const validatedFields = signUpSchema.safeParse({
+        ...data,
+    })
+
+    const redirectUrl = `https://${(await headers()).get("X-Forwarded-Host")}/email_verify`
+
+    console.log(redirectUrl)
+
+    if (!validatedFields.success) {
+        return {
+            errors: z.treeifyError(validatedFields.error).properties
+        }
+    }
+
     const supabase = await createClient()
 
     // type-casting here for convenience
     // in practice, you should validate your inputs
-    const data: SignUpWithPasswordCredentials = {
-        email: formData.get('email') as string,
-        password: formData.get('password') as string,
+    const signUpData: SignUpWithPasswordCredentials = {
+        email: data.email,
+        password: data.password,
+        options: {
+            emailRedirectTo: redirectUrl,
+            data: {
+                first_name: data.firstName,
+                last_name: data.lastName,
+            }
+        }
     }
 
-    const { error } = await supabase.auth.signUp(data)
+    const { error } = await supabase.auth.signUp(signUpData)
 
     if (error) {
+        console.log(error)
         redirect('/error')
     }
 
-    revalidatePath('/login', 'layout')
-    redirect('/login')
+    redirect('/email_verify')
+}
+
+export async function loginWithCode(code: string) {
+    const supabase = await createClient()
+    const {data, error} = await supabase.auth.exchangeCodeForSession(code)
+    if (error) {
+        redirect('/error')
+    }
+    console.log("exchanged code for session:", data)
 }
