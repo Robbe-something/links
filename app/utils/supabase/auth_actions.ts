@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
+import { headers } from "next/headers";
 
 import { createClient } from '@/utils/supabase/server'
 import {SignInWithPasswordCredentials, SignUpWithPasswordCredentials} from "@supabase/auth-js";
@@ -49,7 +50,7 @@ export async function signup(data: z.infer<typeof signUpSchema>) {
         email: data.email,
         password: data.password,
         options: {
-            emailRedirectTo: "http://localhost:3000/email_verify",
+            emailRedirectTo: `https://${(await headers()).get("Host")}/email_verify`,
             data: {
                 first_name: data.firstName,
                 last_name: data.lastName,
