@@ -3,6 +3,7 @@ import {createClient} from "@/utils/supabase/server";
 import {redirect} from "next/navigation";
 import Link from "next/link";
 import {Button} from "@/components/ui/button";
+import ItemsTable from "@/ui/items/table";
 
 export async function generateMetadata({params}: { params: Promise<{ directory: string }> }): Promise<Metadata> {
     const {directory} = await params
@@ -21,7 +22,7 @@ export default async function Page({
 
     const supabase = await createClient()
 
-    const {data, error} = await supabase.from('course')
+    let {data, error} = await supabase.from('course')
         .select(`
             id,
             name
@@ -43,5 +44,21 @@ export default async function Page({
 
     const course_id = data?.id
 
-    return (<p>{course_id}</p>)
+    const l = await supabase.from('item')
+        .select(`
+            id,
+            title,
+            description,
+            link,
+            type (
+                name
+            )
+        `)
+        .eq('course', course_id)
+        .is('parent', null)
+
+    console.log(l.data)
+    console.log(l.error)
+
+    return (<ItemsTable course_id={course_id} />)
 }
