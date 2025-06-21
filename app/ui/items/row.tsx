@@ -17,11 +17,19 @@ export default function ItemsRow({
             name: string
         }
     },
-    onItemClick: (id: string) => void
+    onItemClick: (item: {
+        id: string
+        title: string
+        description: string | null
+        link: string | null
+        type: {
+            name: string
+        }
+    }) => void
 }) {
     return (
         <TableRow className="[&>*]:whitespace-nowrap">
-            <ItemsCell onClick={() => onItemClick(item.id)}>
+            <ItemsCell onClick={() => onItemClick(item)}>
                 <div className="font-bold text-lg">
                     {item.title} <span className="font-bold">({item.type.name})</span>
                 </div>

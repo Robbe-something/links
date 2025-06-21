@@ -52,8 +52,18 @@ export default function ItemsTable({course_id} : {course_id: string}) {
         })
     }, [parent])
 
-    const handleItemClick = (id: string) => {
-        setParent(id);
+    const handleItemClick = (item: {
+        id: string
+        title: string
+        description: string | null
+        link: string | null
+        type: { name: string }
+    }) => {
+        if (item.type.name === 'FOLDER') {
+            setParent(item.id);
+        } else if (item.type.name === 'HYPERLINK' && item.link) {
+            window.open(item.link, '_blank', 'noopener,noreferrer');
+        }
     }
 
     return (
