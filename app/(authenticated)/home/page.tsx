@@ -1,3 +1,5 @@
+import {redirect} from "next/navigation";
+
 export const experimental_ppr = true
 
 import {createClient} from "@/utils/supabase/server";
@@ -18,6 +20,10 @@ export default async function HomePage() {
             description
         )
     `).eq('user', (await supabase.auth.getUser()).data.user?.id!)
+
+    if (error) {
+        redirect('/error')
+    }
 
     return (
         <CoursesTable courses={data!} />
