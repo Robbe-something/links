@@ -73,7 +73,7 @@ export default function ItemsTable({course_id} : {course_id: string}) {
                     <TableRow className="[&>*]:whitespace-nowrap sticky top-0 bg-background after:content-[''] after:inset-x-0 after:h-px after:bg-border after:absolute after:bottom-0 hover:bg-inherit">
                         <TableHead className="font-extrabold text-lg flex items-center gap-2">
                             <button
-                                className={`transition-opacity duration-200 p-1 rounded hover:bg-gray-200 flex items-center ${parent ? 'opacity-100 cursor-pointer' : 'opacity-40 cursor-default'}`}
+                                className={`transition-opacity duration-200 p-1 rounded hover:bg-gray-200 flex items-center cursor-pointer disabled:cursor-default ${parent ? 'opacity-100 cursor-pointer' : 'opacity-40 cursor-default'}`}
                                 disabled={!parent}
                                 aria-label="Go up one folder"
                                 onClick={async (e) => {
