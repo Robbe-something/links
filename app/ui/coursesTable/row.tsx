@@ -16,7 +16,7 @@ export default function CoursesRow({course, enrolmentType} : {
         <TableRow key={course.id} className="[&>*]:whitespace-nowrap">
             <CourcesCell href={`/course/${course.name}`}>
                 <div className="font-bold text-lg">
-                    {course.name} <span className="font-bold">({enrolmentType.description})</span>
+                    {course.name}
                 </div>
                 <CourseDescriptionCell description={course.description} />
             </CourcesCell>
