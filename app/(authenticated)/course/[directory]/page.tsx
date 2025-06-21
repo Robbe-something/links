@@ -60,5 +60,9 @@ export default async function Page({
     console.log(l.data)
     console.log(l.error)
 
-    return (<ItemsTable course_id={course_id} />)
+    return (
+        <div className="px-4 sm:px-10 lg:px-20">
+            <ItemsTable course_id={course_id} />
+        </div>
+    )
 }

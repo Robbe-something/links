@@ -21,7 +21,7 @@ export default function DropDownMenuWithIcon({
 }) {
     return (
         <DropdownMenu>
-            <DropdownMenuTrigger className="focus:outline-none focus:ring-[2px] focus:ring-offset-2 focus:ring-primary rounded-full">
+            <DropdownMenuTrigger className="focus:outline-none focus:ring-[2px] focus:ring-offset-2 focus:ring-primary rounded-full cursor-pointer">
                 <Avatar>
                     <AvatarFallback>{firstName[0].toUpperCase() + lastName[0].toUpperCase()}</AvatarFallback>
                 </Avatar>
@@ -29,12 +29,12 @@ export default function DropDownMenuWithIcon({
             <DropdownMenuContent align="end">
                 <DropdownMenuLabel className="font-bold">{userType.charAt(0).toUpperCase() + userType.substring(1).toLowerCase()}</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => redirect("/settings")}>
+                <DropdownMenuItem onClick={() => redirect("/settings")} className="cursor-pointer">
                     <Settings className="h-4 w-4" /> Settings
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className="text-destructive" onClick={async () => {
+                <DropdownMenuItem className="text-destructive cursor-pointer" onClick={async () => {
                     await logout()
                 }}>
                     <LogOut className="h-4 w-4 text-destructive" /> Logout

@@ -14,7 +14,8 @@ export default async function HomePage() {
         .select(`
         course (
             id,
-            name
+            name,
+            description
         ),
         enrolmentType (
             description
@@ -26,6 +27,8 @@ export default async function HomePage() {
     }
 
     return (
-        <CoursesTable courses={data!} />
+        <div className="px-4 sm:px-10 lg:px-20">
+            <CoursesTable courses={data!} />
+        </div>
     )
 }
