@@ -27,7 +27,7 @@ export default function DropDownMenuWithIcon({
                 </Avatar>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-                <DropdownMenuLabel>{userType.charAt(0).toUpperCase() + userType.substring(1).toLowerCase()}</DropdownMenuLabel>
+                <DropdownMenuLabel className="font-bold">{userType.charAt(0).toUpperCase() + userType.substring(1).toLowerCase()}</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => redirect("/settings")}>
                     <Settings className="h-4 w-4" /> Settings

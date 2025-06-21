@@ -1,3 +1,8 @@
+import Link from "next/link";
+
 export default function StartPage() {
-    return (<p>start</p>)
+    return (<>
+            <Link href="/login">Login</Link>
+            <Link href="/register">Register</Link>
+        </>)
 }
