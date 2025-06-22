@@ -5,6 +5,9 @@ export const experimental_ppr = true
 import {createClient} from "@/utils/supabase/server";
 import {Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table";
 import CoursesTable from "@/ui/coursesTable/table";
+import ItemDialog from "@/ui/items/ItemDialog";
+import {Button} from "@/components/ui/button";
+import {DialogBody} from "next/dist/client/components/react-dev-overlay/ui/components/dialog";
 
 export default async function HomePage() {
     const supabase = await createClient()
