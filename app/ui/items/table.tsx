@@ -6,8 +6,9 @@ import {Button} from "@/components/ui/button";
 import {Table, TableBody, TableHead, TableHeader, TableRow} from "@/components/ui/table";
 import ItemsRow from "@/ui/items/row";
 import { ChevronLeft } from "lucide-react";
+import { Plus } from "lucide-react";
 
-export default function ItemsTable({course_id} : {course_id: string}) {
+export default function ItemsTable({course_id, isLecturer}: {course_id: string, isLecturer: boolean}) {
     const supabase = createClient();
 
     const baseQuery = supabase.from('item')
@@ -35,6 +36,7 @@ export default function ItemsTable({course_id} : {course_id: string}) {
     }[]>([])
     const [parent, setParent] = useState<string | null>(null)
     const [parentTitle, setParentTitle] = useState<string | null>(null)
+
     useEffect(() => {
         var maybePromise
         if (parent === null) {
@@ -71,32 +73,45 @@ export default function ItemsTable({course_id} : {course_id: string}) {
             <Table>
                 <TableHeader>
                     <TableRow className="[&>*]:whitespace-nowrap sticky top-0 bg-background after:content-[''] after:inset-x-0 after:h-px after:bg-border after:absolute after:bottom-0 hover:bg-inherit">
-                        <TableHead className="font-extrabold text-lg flex items-center gap-2">
-                            <button
-                                className={`transition-opacity duration-200 p-1 rounded hover:bg-gray-200 flex items-center cursor-pointer disabled:cursor-default ${parent ? 'opacity-100 cursor-pointer' : 'opacity-40 cursor-default'}`}
-                                disabled={!parent}
-                                aria-label="Go up one folder"
-                                onClick={async (e) => {
-                                    if (!parent) return;
-                                    e.stopPropagation();
-                                    const {data, error} = await supabase.from('item')
-                                        .select(`parent`)
-                                        .eq(`id`, parent!)
-                                        .limit(1)
-                                        .maybeSingle();
-                                    if (error) {
-                                        console.error(error);
-                                        return;
-                                    }
-                                    if (data) {
-                                        setParent(data.parent);
-                                    }
-                                }}
-                                type="button"
-                            >
-                                <ChevronLeft size={22} />
-                            </button>
-                            {parent ? (parentTitle ? parentTitle : '...') : 'Root'}
+                        <TableHead className="font-extrabold text-lg flex items-center gap-2 justify-between">
+                            <div className="flex items-center gap-2">
+                                <button
+                                    className={`transition-opacity duration-200 p-1 rounded hover:bg-gray-200 flex items-center cursor-pointer disabled:cursor-default ${parent ? 'opacity-100 cursor-pointer' : 'opacity-40 cursor-default'}`}
+                                    disabled={!parent}
+                                    aria-label="Go up one folder"
+                                    onClick={async (e) => {
+                                        if (!parent) return;
+                                        e.stopPropagation();
+                                        const {data, error} = await supabase.from('item')
+                                            .select(`parent`)
+                                            .eq(`id`, parent!)
+                                            .limit(1)
+                                            .maybeSingle();
+                                        if (error) {
+                                            console.error(error);
+                                            return;
+                                        }
+                                        if (data) {
+                                            setParent(data.parent);
+                                        }
+                                    }}
+                                    type="button"
+                                >
+                                    <ChevronLeft size={22} />
+                                </button>
+                                {parent ? (parentTitle ? parentTitle : '...') : 'Root'}
+                            </div>
+                            {isLecturer && (
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="rounded p-1 hover:bg-gray-200"
+                                    onClick={() => {/* TODO: open create item modal */}}
+                                    aria-label="Create new item"
+                                >
+                                    <Plus size={22} />
+                                </Button>
+                            )}
                         </TableHead>
                     </TableRow>
                 </TableHeader>

@@ -60,9 +60,19 @@ export default async function Page({
     console.log(l.data)
     console.log(l.error)
 
+    // Fetch enrolment type for current user in this course
+    const user = await supabase.auth.getUser();
+    const { data: enrolment, error: enrolmentError } = await supabase
+        .from('enrolment')
+        .select('enrolmentType(description)')
+        .eq('course', course_id)
+        .eq('user', user.data.user?.id!)
+        .maybeSingle();
+    const isLecturer = enrolment?.enrolmentType?.description === 'LECTURER';
+
     return (
         <div className="px-4 sm:px-10 lg:px-20">
-            <ItemsTable course_id={course_id} />
+            <ItemsTable course_id={course_id} isLecturer={isLecturer} />
         </div>
     )
 }
