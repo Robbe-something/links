@@ -29,19 +29,25 @@ export default function CoursesTable({
             <Table>
                 <TableHeader>
                     <TableRow className="[&>*]:whitespace-nowrap sticky top-0 bg-background after:content-[''] after:inset-x-0 after:h-px after:bg-border after:absolute after:bottom-0 hover:bg-inherit">
-                        <TableHead className="w-full font-extrabold text-lg flex items-center justify-between">
-                            <span>Courses</span>
-                            {isTeacher && (
-                                <button
-                                    className={`transition-opacity duration-200 p-1 rounded hover:bg-gray-200 flex items-center cursor-pointer disabled:cursor-default opacity-100 cursor-pointer`}
-                                    aria-label="Create new course"
-                                    onClick={() => {}}
-                                    type="button"
-                                >
-                                    <Plus size={22} />
-                                </button>
-                            )}
+                        <TableHead className="font-extrabold text-lg">
+                            <div className="flex items-center justify-between">
+                                <span>Courses</span>
+                            </div>
                         </TableHead>
+                            {isTeacher && (
+                                <TableHead className="w-10 text-right">
+                                <div className="flex justify-end">
+                                    <button
+                                        className={`transition-opacity duration-200 p-1 rounded hover:bg-gray-200 flex items-center cursor-pointer disabled:cursor-default opacity-100 cursor-pointer`}
+                                        aria-label="Create new course"
+                                        onClick={() => {}}
+                                        type="button"
+                                    >
+                                        <Plus size={22} />
+                                    </button>
+                                </div>
+                                </TableHead>
+                            )}
                     </TableRow>
                 </TableHeader>
                 <TableBody className="overflow-hidden">
