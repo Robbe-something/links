@@ -50,7 +50,7 @@ export default function Page() {
                         <FormItem>
                             <FormLabel>password</FormLabel>
                             <FormControl>
-                                <Input type="password" className="max-w-xs focus-visible:ring-[3px] focus-visible:ring-blue-500/20 focus-visible:border-blue-500" {...field} />
+                                <Input type="password" autoComplete="new-password" className="max-w-xs focus-visible:ring-[3px] focus-visible:ring-blue-500/20 focus-visible:border-blue-500" {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -63,7 +63,7 @@ export default function Page() {
                         <FormItem>
                             <FormLabel>confirm password</FormLabel>
                             <FormControl>
-                                <Input type="password" className="max-w-xs focus-visible:ring-[3px] focus-visible:ring-blue-500/20 focus-visible:border-blue-500" {...field} />
+                                <Input type="password" autoComplete="new-password" className="max-w-xs focus-visible:ring-[3px] focus-visible:ring-blue-500/20 focus-visible:border-blue-500" {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
