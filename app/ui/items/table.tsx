@@ -54,7 +54,13 @@ export default function ItemsTable({course_id, isLecturer}: {course_id: string, 
             })
         }
         Promise.resolve(maybePromise).then((value) => {
-            setItems(value.data!)
+            // Sort items alphabetically by title before setting state
+            const sortedItems = (value.data || []).slice().sort((a, b) => {
+                if (!a.title) return 1;
+                if (!b.title) return -1;
+                return a.title.localeCompare(b.title);
+            });
+            setItems(sortedItems)
         })
     }, [parent])
 
@@ -156,7 +162,13 @@ export default function ItemsTable({course_id, isLecturer}: {course_id: string, 
 
             const { data: refreshedItems } = await maybePromise;
             if (refreshedItems) {
-                setItems(refreshedItems);
+                // Sort items alphabetically by title before setting state
+                const sortedItems = refreshedItems.slice().sort((a, b) => {
+                    if (!a.title) return 1;
+                    if (!b.title) return -1;
+                    return a.title.localeCompare(b.title);
+                });
+                setItems(sortedItems);
             }
 
             toast("Success", {
