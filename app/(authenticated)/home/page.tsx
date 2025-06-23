@@ -1,49 +1,61 @@
-import {redirect} from "next/navigation";
+"use client"
 
-export const experimental_ppr = true
-
-import {createClient} from "@/utils/supabase/server";
-import {Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table";
+import { useEffect, useState, useCallback } from "react";
+import { redirect } from "next/navigation";
+import { createClient } from "@/utils/supabase/client";
 import CoursesTable from "@/ui/coursesTable/table";
-import ItemDialog from "@/ui/items/ItemDialog";
-import {Button} from "@/components/ui/button";
-import {DialogBody} from "next/dist/client/components/react-dev-overlay/ui/components/dialog";
 
-export default async function HomePage() {
-    const supabase = await createClient()
-    const user = await supabase.auth.getUser();
+export default function HomePage() {
+    const [courses, setCourses] = useState<any[]>([]);
+    const [userType, setUserType] = useState<string | undefined>(undefined);
+    const [loading, setLoading] = useState(true);
+    const supabase = createClient();
 
-    const {data, error} = await supabase
-        .from('enrolment')
-        .select(`
-        course (
-            id,
-            name,
-            description
-        ),
-        enrolmentType (
-            description
-        )
-    `).eq('user', user.data.user?.id!)
+    const fetchCourses = useCallback(async () => {
+        setLoading(true);
+        const user = await supabase.auth.getUser();
+        const { data, error } = await supabase
+            .from('enrolment')
+            .select(`
+                course (
+                    id,
+                    name,
+                    description
+                ),
+                enrolmentType (
+                    description
+                )
+            `)
+            .eq('user', user.data.user?.id!);
+        if (error) {
+            redirect('/error');
+        }
+        setCourses(data || []);
+        setLoading(false);
+    }, [supabase]);
 
-    if (error) {
-        redirect('/error')
-    }
+    const fetchUserType = useCallback(async () => {
+        const user = await supabase.auth.getUser();
+        const { data: userData, error: userError } = await supabase
+            .from('user')
+            .select(`userRole ( description )`)
+            .eq('id', user?.data.user?.id!)
+            .maybeSingle();
+        setUserType(userError ? undefined : userData?.userRole?.description);
+    }, [supabase]);
 
-    // Fetch user role (teacher/student/etc)
-    const { data: userData, error: userError } = await supabase
-        .from('user')
-        .select(`userRole ( description )`)
-        .eq('id', user?.data.user?.id!)
-        .maybeSingle();
-    const userType = userError ? undefined : userData?.userRole?.description
+    useEffect(() => {
+        fetchCourses();
+        fetchUserType();
+    }, [fetchCourses, fetchUserType]);
 
     return (
         <div className="px-4 sm:px-10 lg:px-20">
             <CoursesTable
-                courses={data!}
+                courses={courses}
                 userType={userType}
+                onCreateCourse={fetchCourses}
             />
         </div>
-    )
+    );
 }

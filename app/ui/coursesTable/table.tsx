@@ -79,6 +79,11 @@ export default function CoursesTable({
             console.log("Error inserting enrolments:", enrolmentInsertError);
             return;
         }
+
+        // Call onCreateCourse to trigger parent refresh
+        if (onCreateCourse) {
+            onCreateCourse();
+        }
     }
 
     const updateCourse = async (formData: {
@@ -132,6 +137,11 @@ export default function CoursesTable({
             console.log("Error updating enrolments:", enrolmentUpdateError);
             return;
         }
+
+        // Call onCreateCourse to trigger parent refresh after edit as well
+        if (onCreateCourse) {
+            onCreateCourse();
+        }
     }
 
     const isTeacher = userType?.toLowerCase() === "teacher";
@@ -164,17 +174,20 @@ export default function CoursesTable({
                     </TableRow>
                 </TableHeader>
                 <TableBody className="overflow-hidden">
-                    {courses.map(d => (
-                        <CoursesRow
-                            key={d.course.id}
-                            course={{
-                                ...d.course,
-                                description: d.course.description // pass description if present
-                            }}
-                            enrolmentType={d.enrolmentType}
-                            onEditCourse={updateCourse}
-                        />
-                    ))}
+                    {courses
+                        .slice() // copy to avoid mutating prop
+                        .sort((a, b) => a.course.name.localeCompare(b.course.name))
+                        .map(d => (
+                            <CoursesRow
+                                key={d.course.id}
+                                course={{
+                                    ...d.course,
+                                    description: d.course.description // pass description if present
+                                }}
+                                enrolmentType={d.enrolmentType}
+                                onEditCourse={updateCourse}
+                            />
+                        ))}
                 </TableBody>
             </Table>
         </div>
