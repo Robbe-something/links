@@ -4,6 +4,8 @@ import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/c
 import CoursesRow from "@/ui/coursesTable/row";
 import {ChevronLeft, Plus} from "lucide-react";
 import { Button } from "@/components/ui/button";
+import CourseDialog from "@/ui/coursesTable/CourseDialog";
+import {createClient} from "@/utils/supabase/client";
 
 export default function CoursesTable({
     courses,
@@ -23,9 +25,118 @@ export default function CoursesTable({
     userType?: string,
     onCreateCourse?: () => void
 }) {
+
+    const supabase = createClient();
+
+    const saveNewCourse = async (formData: {
+        name: string;
+        description?: string;
+        userIds: string[];
+    }) => {
+        console.log(formData);
+
+        const courseId = crypto.randomUUID();
+
+        // create a new course in the database
+        const { error } = await supabase
+            .from('course')
+            .insert({
+                id: courseId,
+                name: formData.name,
+                description: formData.description || null,
+            })
+
+        if (error) {
+            console.log("Error creating course:", error);
+            return;
+        }
+
+
+        // find enrolment type for student
+        const { data: a, error: enrolmentError } = await supabase
+            .from('enrolmentType')
+            .select('id')
+            .eq('description', 'STUDENT')
+            .limit(1);
+
+        if (enrolmentError || !a || a.length === 0) {
+            console.log("Error fetching enrolment type:", enrolmentError);
+            return;
+        }
+
+        // Now insert the enrolments for the users
+        const enrolments = formData.userIds.map(userId => ({
+            user: userId,
+            course: courseId,
+            enrolmentType: a[0].id
+        }));
+
+        const { error: enrolmentInsertError } = await supabase
+            .from('enrolment')
+            .insert(enrolments);
+
+        if (enrolmentInsertError) {
+            console.log("Error inserting enrolments:", enrolmentInsertError);
+            return;
+        }
+    }
+
+    const updateCourse = async (formData: {
+        name: string;
+        description?: string;
+        userIds: string[];
+    }, courseId: string) => {
+        console.log("Updating course:", courseId, formData);
+
+        // Update the course in the database
+        const { error } = await supabase
+            .from('course')
+            .update({
+                name: formData.name,
+                description: formData.description || null,
+            })
+            .eq('id', courseId);
+
+        if (error) {
+            console.log("Error updating course:", error);
+            return;
+        }
+
+        // find enrolment type for student
+        const { data: a, error: enrolmentError } = await supabase
+            .from('enrolmentType')
+            .select('id')
+            .eq('description', 'STUDENT')
+            .limit(1);
+
+        if (enrolmentError || !a || a.length === 0) {
+            console.log("Error fetching enrolment type:", enrolmentError);
+            return;
+        }
+
+        // Update enrolments for the users
+        const enrolments = formData.userIds.map(userId => ({
+            user: userId,
+            course: courseId,
+            enrolmentType: a[0].id // Assuming you want to set all to STUDENT
+        }));
+
+        const { error: enrolmentUpdateError } = await supabase
+            .from('enrolment')
+            .upsert(enrolments, {
+                ignoreDuplicates: true,
+                onConflict: 'user, course'
+            });
+
+        if (enrolmentUpdateError) {
+            console.log("Error updating enrolments:", enrolmentUpdateError);
+            return;
+        }
+    }
+
     const isTeacher = userType?.toLowerCase() === "teacher";
     return (
-        <div className="pt-8 grid w-full [&>div]:max-h-[300px] [&>div]:border [&>div]:rounded-md">
+        <div className="pt-8 grid w-full [&>div]:max-h-[900px] [&>div]:border [&>div]:rounded-md">
             <Table>
                 <TableHeader>
                     <TableRow className="[&>*]:whitespace-nowrap sticky top-0 bg-background after:content-[''] after:inset-x-0 after:h-px after:bg-border after:absolute after:bottom-0 hover:bg-inherit">
@@ -37,14 +148,16 @@ export default function CoursesTable({
                             {isTeacher && (
                                 <TableHead className="w-10 text-right">
                                 <div className="flex justify-end">
-                                    <button
-                                        className={`transition-opacity duration-200 p-1 rounded hover:bg-gray-200 flex items-center cursor-pointer disabled:cursor-default opacity-100 cursor-pointer`}
-                                        aria-label="Create new course"
-                                        onClick={() => {}}
-                                        type="button"
-                                    >
-                                        <Plus size={22} />
-                                    </button>
+                                    <CourseDialog creating={true} onSave={saveNewCourse} asChild>
+                                        <button
+                                            className={`transition-opacity duration-200 p-1 rounded hover:bg-gray-200 flex items-center cursor-pointer disabled:cursor-default opacity-100 cursor-pointer`}
+                                            aria-label="Create new course"
+                                            onClick={() => {}}
+                                            type="button"
+                                        >
+                                            <Plus size={22} />
+                                        </button>
+                                    </CourseDialog>
                                 </div>
                                 </TableHead>
                             )}
@@ -59,6 +172,7 @@ export default function CoursesTable({
                                 description: d.course.description // pass description if present
                             }}
                             enrolmentType={d.enrolmentType}
+                            onEditCourse={updateCourse}
                         />
                     ))}
                 </TableBody>
