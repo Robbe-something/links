@@ -185,7 +185,7 @@ export default function SettingsPage() {
             {/* Danger Zone */}
             <div className="mt-12 border-t pt-8">
                 <h2 className="text-lg font-semibold text-red-600 mb-4">Danger Zone</h2>
-                <Button variant="destructive" onClick={handleDeleteAccount} disabled={deleting}>
+                <Button variant="destructive" onClick={handleDeleteAccount} disabled>
                     {deleting ? "Deleting..." : "Delete Account"}
                 </Button>
             </div>
