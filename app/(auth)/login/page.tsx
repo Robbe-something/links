@@ -11,6 +11,7 @@ import {Button} from "@/components/ui/button";
 import {getSignInSchema} from "@/utils/supabase/auth_schema";
 import {Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card";
 import Link from "next/link";
+import {useState} from "react";
 
 const signInSchema = getSignInSchema()
 
@@ -23,8 +24,15 @@ export default function LoginPage() {
         }
     })
 
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
     async function onSubmit(data: z.infer<typeof signInSchema>) {
-        await login(data)
+        setIsSubmitting(true);
+        try {
+            await login(data)
+        } finally {
+            setIsSubmitting(false);
+        }
     }
 
     return (
@@ -71,7 +79,9 @@ export default function LoginPage() {
                 </Form>
             </CardContent>
             <CardFooter className="flex-col gap-2">
-                <Button className="w-full" onClick={() => form.handleSubmit(onSubmit)()}>Login</Button>
+                <Button className="w-full" onClick={() => form.handleSubmit(onSubmit)()} disabled={isSubmitting}>
+                    {isSubmitting ? "Logging in..." : "Login"}
+                </Button>
             </CardFooter>
         </Card>
     )

@@ -10,6 +10,7 @@ import {Input} from "@/components/ui/input";
 import {Button} from "@/components/ui/button";
 import {Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card";
 import Link from "next/link";
+import {useState} from "react";
 
 const signUpSchema = getSignUpSchema()
 
@@ -24,9 +25,15 @@ export default function Page() {
             lastName: ""
         }
     })
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     async function onSubmit(data: z.infer<typeof signUpSchema>) {
-        await signup(data)
+        setIsSubmitting(true);
+        try {
+            await signup(data)
+        } finally {
+            setIsSubmitting(false);
+        }
     }
 
     return (
@@ -112,7 +119,9 @@ export default function Page() {
                 </Form>
             </CardContent>
             <CardFooter className="flex-col gap-2">
-                <Button className="w-full" onClick={() => form.handleSubmit(onSubmit)()}>Register</Button>
+                <Button className="w-full" onClick={() => form.handleSubmit(onSubmit)()} disabled={isSubmitting}>
+                    {isSubmitting ? "Registering..." : "Register"}
+                </Button>
             </CardFooter>
         </Card>
     )
