@@ -4,7 +4,7 @@ import CourseDescriptionCell from './descriptionCell';
 import { Pencil } from "lucide-react";
 import CourseDialog from "@/ui/coursesTable/CourseDialog";
 
-export default function CoursesRow({course, enrolmentType, onEditCourse} : {
+export default function CoursesRow({course, enrolmentType, onEditCourse, onDeleteCourse} : {
     course: {
         id: string
         name: string
@@ -17,7 +17,8 @@ export default function CoursesRow({course, enrolmentType, onEditCourse} : {
         name: string;
         description?: string;
         userIds: string[];
-    }, courseId: string) => Promise<void>
+    }, courseId: string) => Promise<void>,
+    onDeleteCourse?: (courseId: string) => Promise<void>
 }) {
     const isLecturer = enrolmentType.description.toLowerCase() === "lecturer";
 
@@ -43,7 +44,7 @@ export default function CoursesRow({course, enrolmentType, onEditCourse} : {
             </CourcesCell>
             {isLecturer && (
                 <TableCell className="w-10">
-                    <CourseDialog creating={false} course={course} asChild onSave={handleEditCourse}>
+                    <CourseDialog creating={false} course={course} asChild onSave={handleEditCourse} onDelete={onDeleteCourse}>
                         <button
                             className="transition-opacity duration-200 p-1 rounded hover:bg-gray-200 flex items-center cursor-pointer"
                             aria-label="Edit course"

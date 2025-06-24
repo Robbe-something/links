@@ -31,7 +31,8 @@ export default function CourseDialog({
     creating, 
     asChild, 
     onSave,
-    course
+    course,
+    onDelete
 }: {
     children: React.ReactNode, 
     creating: boolean, 
@@ -41,7 +42,8 @@ export default function CourseDialog({
         id: string
         name: string
         description: string | null
-    }
+    },
+    onDelete?: (courseId: string) => Promise<void>
 }) {
     const supabase = createClient();
     const [open, setOpen] = useState(false);
@@ -274,6 +276,25 @@ export default function CourseDialog({
                                 </ul>
                             </div>
                         </div>
+
+                        {!creating && course && onDelete && (
+                            <section className="mb-4 border border-red-200 rounded p-3 bg-red-50">
+                                <div className="flex items-center justify-between">
+                                    <span className="font-semibold text-red-700">Danger zone</span>
+                                    <Button
+                                        type="button"
+                                        variant="destructive"
+                                        size="sm"
+                                        onClick={async () => {
+                                            await onDelete(course.id);
+                                            setOpen(false);
+                                        }}
+                                    >
+                                        Delete course
+                                    </Button>
+                                </div>
+                            </section>
+                        )}
 
                         <DialogFooter>
                             <DialogClose asChild>

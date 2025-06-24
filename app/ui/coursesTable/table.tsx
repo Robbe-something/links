@@ -144,6 +144,26 @@ export default function CoursesTable({
         }
     }
 
+    const onDeleteCourse = async (courseId: string) => {
+        console.log("Deleting course:", courseId);
+
+        // Delete the course from the database
+        const { error } = await supabase
+            .from('course')
+            .delete()
+            .eq('id', courseId);
+
+        if (error) {
+            console.log("Error deleting course:", error);
+            return;
+        }
+
+        // Call onCreateCourse to trigger parent refresh after delete
+        if (onCreateCourse) {
+            onCreateCourse();
+        }
+    }
+
     const isTeacher = userType?.toLowerCase() === "teacher";
     return (
         <div className="pt-8 grid w-full [&>div]:max-h-[900px] [&>div]:border [&>div]:rounded-md">
@@ -186,6 +206,7 @@ export default function CoursesTable({
                                 }}
                                 enrolmentType={d.enrolmentType}
                                 onEditCourse={updateCourse}
+                                onDeleteCourse={onDeleteCourse}
                             />
                         ))}
                 </TableBody>
