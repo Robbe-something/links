@@ -20,3 +20,20 @@ export function getSignInSchema() {
         password: z.string(),
     })
 }
+
+export function getPasswordResetSchema() {
+    return z.object({
+        email: z.email(),
+    })
+}
+
+export function getNewPasswordSchema() {
+    return z.object({
+        password: z.string().min(8),
+        confirmPassword: z.string().min(8),
+    })
+        .refine((data) => data.password === data.confirmPassword, {
+            message: 'Passwords do not match',
+            path: ['confirmPassword'],
+        })
+}

@@ -7,10 +7,17 @@ import { headers } from "next/headers";
 import { createClient } from '@/utils/supabase/server'
 import {SignInWithPasswordCredentials, SignUpWithPasswordCredentials} from "@supabase/auth-js";
 import * as z from 'zod/v4';
-import {getSignInSchema, getSignUpSchema} from "@/utils/supabase/auth_schema";
+import {
+    getNewPasswordSchema,
+    getPasswordResetSchema,
+    getSignInSchema,
+    getSignUpSchema
+} from "@/utils/supabase/auth_schema";
 
 const signUpSchema = getSignUpSchema()
 const signInSchema = getSignInSchema()
+const passwordResetSchema = getPasswordResetSchema()
+const newPasswordSchema = getNewPasswordSchema()
 
 export async function login(data: z.infer<typeof signInSchema>) {
     const validatedFields = signInSchema.safeParse({
@@ -86,6 +93,44 @@ export async function loginWithCode(code: string) {
         redirect('/error')
     }
     console.log("exchanged code for session:", data)
+}
+
+export async function resetPasswordLink(data: z.infer<typeof passwordResetSchema>)  {
+    const supabase = await createClient()
+    const {error} = await supabase.auth.resetPasswordForEmail(data.email, {
+        redirectTo: `https://${(await headers()).get("X-Forwarded-Host")}/reset_password`,
+    })
+
+    if (error) {
+        console.log(error)
+        redirect('/error')
+    }
+    redirect('/reset_password')
+}
+
+export async function resetPassword(data: z.infer<typeof newPasswordSchema>)  {
+    const validatedFields = newPasswordSchema.safeParse({
+        ...data,
+    })
+
+    if (!validatedFields.success) {
+        // this should in theory never happen as the data is already validated client side
+        redirect('/error')
+    }
+
+    const supabase = await createClient()
+    const { error } = await supabase.auth.updateUser({
+        password: data.password,
+    })
+
+    if (error) {
+        console.log(error)
+        redirect('/error')
+    }
+
+    revalidatePath('/', 'layout')
+    redirect('/')
+
 }
 
 export async function logout() {
