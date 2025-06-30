@@ -6,6 +6,17 @@ import ItemDescriptionCell from './descriptionCell';
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ExternalLink, Eye, EyeOff, Folder, Link2, Pencil, Trash2 } from "lucide-react";
 import { useState } from "react";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import ItemDialog from "@/ui/items/ItemDialog";
 
 export default function ItemsRow({
@@ -139,14 +150,37 @@ export default function ItemsRow({
                                 <Pencil size={18} />
                             </button>
                         </ItemDialog>
-                        <button
-                            className="transition-opacity duration-200 p-1 rounded hover:bg-red-200 flex items-center cursor-pointer text-red-600"
-                            aria-label="Delete item"
-                            onClick={handleDeleteItem}
-                            type="button"
-                        >
-                            <Trash2 size={18} />
-                        </button>
+                        <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                                <button
+                                    className="transition-opacity duration-200 p-1 rounded hover:bg-red-200 flex items-center cursor-pointer text-red-600"
+                                    aria-label="Delete item"
+                                    type="button"
+                                >
+                                    <Trash2 size={18} />
+                                </button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                                <AlertDialogHeader>
+                                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                        This action cannot be undone. This will permanently delete the
+                                        item.
+                                    </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                    <AlertDialogAction
+                                        onClick={async () => {
+                                            if (onDeleteItem) {
+                                                await onDeleteItem(item.id);
+                                                setIsDeleted(true);
+                                            }
+                                        }}
+                                    >Continue</AlertDialogAction>
+                                </AlertDialogFooter>
+                            </AlertDialogContent>
+                        </AlertDialog>
                     </div>
                 </TableCell>
             )}

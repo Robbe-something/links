@@ -17,6 +17,17 @@ import {useForm} from "react-hook-form";
 import * as z from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
 import { X } from "lucide-react"; // Add this for the cross icon
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 // Define form schema with Zod
 const formSchema = z.object({
@@ -281,17 +292,35 @@ export default function CourseDialog({
                             <section className="mb-4 border border-red-200 rounded p-3 bg-red-50">
                                 <div className="flex items-center justify-between">
                                     <span className="font-semibold text-red-700">Danger zone</span>
-                                    <Button
-                                        type="button"
-                                        variant="destructive"
-                                        size="sm"
-                                        onClick={async () => {
-                                            await onDelete(course.id);
-                                            setOpen(false);
-                                        }}
-                                    >
-                                        Delete course
-                                    </Button>
+                                    <AlertDialog>
+                                        <AlertDialogTrigger asChild>
+                                            <Button
+                                                type="button"
+                                                variant="destructive"
+                                                size="sm"
+                                            >
+                                                Delete course
+                                            </Button>
+                                        </AlertDialogTrigger>
+                                        <AlertDialogContent>
+                                            <AlertDialogHeader>
+                                                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                                <AlertDialogDescription>
+                                                    This action cannot be undone. This will permanently delete the
+                                                    course.
+                                                </AlertDialogDescription>
+                                            </AlertDialogHeader>
+                                            <AlertDialogFooter>
+                                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                <AlertDialogAction
+                                                    onClick={async () => {
+                                                        await onDelete(course.id);
+                                                        setOpen(false);
+                                                    }}
+                                                >Continue</AlertDialogAction>
+                                            </AlertDialogFooter>
+                                        </AlertDialogContent>
+                                    </AlertDialog>
                                 </div>
                             </section>
                         )}

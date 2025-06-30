@@ -9,6 +9,17 @@ import {Button} from "@/components/ui/button";
 import {useEffect, useState} from "react";
 import {createClient as createSupabaseClient} from "@/utils/supabase/client";
 import { deleteAccount } from "@/utils/supabase/auth_actions";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 const profileSchema = z.object({
     firstName: z.string().min(1, "First name is required"),
@@ -197,9 +208,28 @@ export default function SettingsPage() {
                 {deleteError && (
                     <div className="text-red-600 text-sm mb-4">{deleteError}</div>
                 )}
-                <Button variant="destructive" onClick={handleDeleteAccount} disabled={deleting}>
-                    {deleting ? "Deleting..." : "Delete Account"}
-                </Button>
+                <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                        <Button variant="destructive" disabled={deleting}>
+                            {deleting ? "Deleting..." : "Delete Account"}
+                        </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                                This action cannot be undone. This will permanently delete your
+                                account and all associated data.
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction
+                                onClick={handleDeleteAccount}
+                            >Continue</AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
             </div>
         </div>);
 }
