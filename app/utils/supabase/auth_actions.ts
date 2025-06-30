@@ -138,3 +138,36 @@ export async function logout() {
     revalidatePath('/', 'layout')
     redirect('/login')
 }
+
+import { createAdminClient } from '@/utils/supabase/admin';
+
+export async function deleteAccount() {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+
+    if (!user) {
+        return { error: "No user found." };
+    }
+
+    // first remove all enrollments
+    const { error: deleteEnrollmentsError } = await supabase
+        .from('enrolment')
+        .delete()
+        .eq('user', user.id)
+
+    if (deleteEnrollmentsError) {
+        return { error: deleteEnrollmentsError.message };
+    }
+
+    const adminClient = createAdminClient();
+
+    // then delete the user
+    const { error: deleteUserError } = await adminClient.auth.admin.deleteUser(user.id)
+
+    if (deleteUserError) {
+        return { error: deleteUserError.message };
+    }
+
+    revalidatePath('/', 'layout')
+    redirect('/login')
+}

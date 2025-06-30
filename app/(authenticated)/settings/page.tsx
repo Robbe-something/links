@@ -8,6 +8,7 @@ import {Input} from "@/components/ui/input";
 import {Button} from "@/components/ui/button";
 import {useEffect, useState} from "react";
 import {createClient as createSupabaseClient} from "@/utils/supabase/client";
+import { deleteAccount } from "@/utils/supabase/auth_actions";
 
 const profileSchema = z.object({
     firstName: z.string().min(1, "First name is required"),
@@ -25,6 +26,7 @@ const passwordSchema = z.object({
 
 export default function SettingsPage() {
     const [deleting, setDeleting] = useState(false);
+    const [deleteError, setDeleteError] = useState<string | null>(null);
     const [passwordError, setPasswordError] = useState<string | null>(null);
     const supabase = createSupabaseClient();
 
@@ -88,8 +90,15 @@ export default function SettingsPage() {
 
     async function handleDeleteAccount() {
         setDeleting(true);
-        // TODO: Implement account deletion logic
-        setDeleting(false);
+        setDeleteError(null);
+        try {
+            const result = await deleteAccount();
+            if (result?.error) {
+                setDeleteError(result.error);
+            }
+        } finally {
+            setDeleting(false);
+        }
     }
 
     return (<div className="max-w-xl mx-auto py-12">
@@ -185,7 +194,10 @@ export default function SettingsPage() {
             {/* Danger Zone */}
             <div className="mt-12 border-t pt-8">
                 <h2 className="text-lg font-semibold text-red-600 mb-4">Danger Zone</h2>
-                <Button variant="destructive" onClick={handleDeleteAccount} disabled>
+                {deleteError && (
+                    <div className="text-red-600 text-sm mb-4">{deleteError}</div>
+                )}
+                <Button variant="destructive" onClick={handleDeleteAccount} disabled={deleting}>
                     {deleting ? "Deleting..." : "Delete Account"}
                 </Button>
             </div>
