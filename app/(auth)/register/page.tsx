@@ -26,11 +26,16 @@ export default function Page() {
         }
     })
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     async function onSubmit(data: z.infer<typeof signUpSchema>) {
         setIsSubmitting(true);
+        setError(null);
         try {
-            await signup(data)
+            const result = await signup(data)
+            if (result?.error) {
+                setError(result.error);
+            }
         } finally {
             setIsSubmitting(false);
         }
@@ -49,7 +54,7 @@ export default function Page() {
             </CardHeader>
             <CardContent>
                 <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                    <form id="register-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                         <FormField
                             control={form.control}
                             name="email"
@@ -119,7 +124,8 @@ export default function Page() {
                 </Form>
             </CardContent>
             <CardFooter className="flex-col gap-2">
-                <Button className="w-full" onClick={() => form.handleSubmit(onSubmit)()} disabled={isSubmitting}>
+                {error && <p className="text-sm font-medium text-destructive">{error}</p>}
+                <Button form="register-form" type="submit" className="w-full" disabled={isSubmitting}>
                     {isSubmitting ? "Registering..." : "Register"}
                 </Button>
             </CardFooter>

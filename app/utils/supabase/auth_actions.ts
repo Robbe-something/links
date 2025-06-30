@@ -26,7 +26,7 @@ export async function login(data: z.infer<typeof signInSchema>) {
 
     if (!validatedFields.success) {
         // this should in theory never happen as the data is already validated client side
-        redirect('/error')
+        return { error: "Invalid form data." }
     }
 
     const supabase = await createClient()
@@ -41,7 +41,7 @@ export async function login(data: z.infer<typeof signInSchema>) {
     const { error } = await supabase.auth.signInWithPassword(signInData)
 
     if (error) {
-        redirect('/error')
+        return { error: error.message }
     }
 
     revalidatePath('/', 'layout')
@@ -57,7 +57,7 @@ export async function signup(data: z.infer<typeof signUpSchema>) {
 
     if (!validatedFields.success) {
         // this should in theory never happen as the data is already validated client side
-        redirect('/error')
+        return { error: "Invalid form data." }
     }
 
     const supabase = await createClient()
@@ -79,8 +79,7 @@ export async function signup(data: z.infer<typeof signUpSchema>) {
     const { error } = await supabase.auth.signUp(signUpData)
 
     if (error) {
-        console.log(error)
-        redirect('/error')
+        return { error: error.message }
     }
 
     redirect('/email_verify')

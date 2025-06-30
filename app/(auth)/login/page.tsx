@@ -25,11 +25,16 @@ export default function LoginPage() {
     })
 
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     async function onSubmit(data: z.infer<typeof signInSchema>) {
         setIsSubmitting(true);
+        setError(null);
         try {
-            await login(data)
+            const result = await login(data)
+            if (result?.error) {
+                setError(result.error);
+            }
         } finally {
             setIsSubmitting(false);
         }
@@ -48,7 +53,7 @@ export default function LoginPage() {
             </CardHeader>
             <CardContent>
                 <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                    <form id="login-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                         <FormField
                             control={form.control}
                             name="email"
@@ -67,18 +72,18 @@ export default function LoginPage() {
                             name="password"
                             render={({ field }) => (
                                 <FormItem>
-                                    <div className="flex items-center">
-                                        <FormLabel>password</FormLabel>
+                                    <FormLabel>password</FormLabel>
+                                    <FormControl>
+                                        <Input type="password" className="max-w-xs focus-visible:ring-[3px] focus-visible:ring-blue-500/20 focus-visible:border-blue-500" {...field} />
+                                    </FormControl>
+                                    <div className="text-right">
                                         <Link
                                             href="/forgot_password"
-                                            className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
+                                            className="text-sm underline-offset-4 hover:underline"
                                         >
                                             Forgot your password?
                                         </Link>
                                     </div>
-                                    <FormControl>
-                                        <Input type="password" className="max-w-xs focus-visible:ring-[3px] focus-visible:ring-blue-500/20 focus-visible:border-blue-500" {...field} />
-                                    </FormControl>
                                     <FormMessage />
                                 </FormItem>
                             )}
@@ -87,7 +92,8 @@ export default function LoginPage() {
                 </Form>
             </CardContent>
             <CardFooter className="flex-col gap-2">
-                <Button className="w-full" onClick={() => form.handleSubmit(onSubmit)()} disabled={isSubmitting}>
+                {error && <p className="text-sm font-medium text-destructive">{error}</p>}
+                <Button form="login-form" type="submit" className="w-full" disabled={isSubmitting}>
                     {isSubmitting ? "Logging in..." : "Login"}
                 </Button>
             </CardFooter>
