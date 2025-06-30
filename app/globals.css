@@ -45,8 +45,8 @@
 
 :root {
   --radius: 0.625rem;
-  --background: var(--clr-neutral-a0);
-  --foreground: var(--clr-neutral-a50);
+  --background: #FAF9F6;
+  --foreground: var(--clr-neutral-a40);
   --card: var(--clr-neutral-a0);
   --card-foreground: var(--clr-neutral-a50);
   --popover: var(--clr-neutral-a0);
@@ -128,7 +128,7 @@
 }
 
 .dark {
-  --background: var(--clr-neutral-a50);
+  --background: #0B1215;
   --foreground: var(--clr-neutral-a0);
   --card: var(--clr-neutral-a40);
   --card-foreground: var(--clr-neutral-a0);
@@ -160,6 +160,7 @@
   --sidebar-accent-foreground: var(--clr-neutral-a50);
   --sidebar-border: var(--clr-neutral-a30);
   --sidebar-ring: var(--clr-primary-a10);
+  --navbar-background: #1A1A1A;
 }
 
 @layer base {
