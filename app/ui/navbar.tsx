@@ -5,6 +5,7 @@ import NameWithDropdown from "@/ui/nameWithDropdown";
 import {Suspense} from "react";
 import {Avatar, AvatarFallback} from "@/components/ui/avatar";
 import { ModeToggle } from "@/components/ui/theme-toggle";
+import { LanguageSwitcher } from "@/components/ui/language-switcher";
 
 export default function Navbar() {
     return (
@@ -21,6 +22,7 @@ export default function Navbar() {
                         <div className="flex items-center"></div>
                     </div>
                     <div className="flex gap-2">
+                        <LanguageSwitcher />
                         <ModeToggle />
                         <Suspense fallback={<Avatar>
                             <AvatarFallback>Li</AvatarFallback>

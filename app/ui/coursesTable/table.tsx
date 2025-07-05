@@ -6,6 +6,7 @@ import {ChevronLeft, Plus} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import CourseDialog from "@/ui/coursesTable/CourseDialog";
 import {createClient} from "@/utils/supabase/client";
+import { useTranslation } from "@/lib/i18n/context";
 
 export default function CoursesTable({
     courses,
@@ -26,6 +27,7 @@ export default function CoursesTable({
     onCreateCourse?: () => void
 }) {
 
+    const { t } = useTranslation();
     const supabase = createClient();
 
     const saveNewCourse = async (formData: {
@@ -172,7 +174,7 @@ export default function CoursesTable({
                     <TableRow className="[&>*]:whitespace-nowrap sticky top-0 bg-background after:content-[''] after:inset-x-0 after:h-px after:bg-border after:absolute after:bottom-0 hover:bg-inherit">
                         <TableHead className="font-extrabold text-lg">
                             <div className="flex items-center justify-between">
-                                <span>Courses</span>
+                                <span>{t('courses.title')}</span>
                             </div>
                         </TableHead>
                             {isTeacher && (
@@ -181,7 +183,7 @@ export default function CoursesTable({
                                     <CourseDialog creating={true} onSave={saveNewCourse} asChild>
                                         <button
                                             className={`transition-opacity duration-200 p-1 rounded hover:bg-gray-200 flex items-center cursor-pointer disabled:cursor-default opacity-100 cursor-pointer`}
-                                            aria-label="Create new course"
+                                            aria-label={t('courses.createNewCourse')}
                                             onClick={() => {}}
                                             type="button"
                                         >

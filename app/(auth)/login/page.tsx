@@ -12,10 +12,12 @@ import {getSignInSchema} from "@/utils/supabase/auth_schema";
 import {Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card";
 import Link from "next/link";
 import {useState} from "react";
+import { useTranslation } from "@/lib/i18n/context";
 
 const signInSchema = getSignInSchema()
 
 export default function LoginPage() {
+    const { t } = useTranslation();
     const form = useForm<z.infer<typeof signInSchema>>({
         resolver: zodResolver(signInSchema),
         defaultValues: {
@@ -43,12 +45,12 @@ export default function LoginPage() {
     return (
         <Card className="w-full max-w-sm">
             <CardHeader>
-                <CardTitle>Login to your account</CardTitle>
+                <CardTitle>{t('auth.login')}</CardTitle>
                 <CardDescription>
-                    Enter your email and password to sign in to your account.
+                    {t('auth.loginDescription')}
                 </CardDescription>
                 <CardAction>
-                    <Link href="/register"><Button variant="link">Sign Up</Button></Link>
+                    <Link href="/register"><Button variant="link">{t('auth.signUp')}</Button></Link>
                 </CardAction>
             </CardHeader>
             <CardContent>
@@ -59,7 +61,7 @@ export default function LoginPage() {
                             name="email"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>email</FormLabel>
+                                    <FormLabel>{t('auth.email')}</FormLabel>
                                     <FormControl>
                                         <Input type="text" placeholder="example@email.com" className="max-w-xs focus-visible:ring-[3px] focus-visible:ring-blue-500/20 focus-visible:border-blue-500" {...field} />
                                     </FormControl>
@@ -72,7 +74,7 @@ export default function LoginPage() {
                             name="password"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>password</FormLabel>
+                                    <FormLabel>{t('auth.password')}</FormLabel>
                                     <FormControl>
                                         <Input type="password" className="max-w-xs focus-visible:ring-[3px] focus-visible:ring-blue-500/20 focus-visible:border-blue-500" {...field} />
                                     </FormControl>
@@ -81,7 +83,7 @@ export default function LoginPage() {
                                             href="/forgot_password"
                                             className="text-sm underline-offset-4 hover:underline"
                                         >
-                                            Forgot your password?
+                                            {t('auth.forgotPassword')}
                                         </Link>
                                     </div>
                                     <FormMessage />
@@ -94,7 +96,7 @@ export default function LoginPage() {
             <CardFooter className="flex-col gap-2">
                 {error && <p className="text-sm font-medium text-destructive">{error}</p>}
                 <Button form="login-form" type="submit" className="w-full" disabled={isSubmitting}>
-                    {isSubmitting ? "Logging in..." : "Login"}
+                    {isSubmitting ? t('auth.loggingIn') : t('auth.loginButton')}
                 </Button>
             </CardFooter>
         </Card>

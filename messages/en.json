@@ -1,0 +1,41 @@
+{
+  "nav": {
+    "links": "Links"
+  },
+  "auth": {
+    "login": "Login to your account",
+    "loginButton": "Login",
+    "loginDescription": "Enter your email and password to sign in to your account.",
+    "signUp": "Sign Up",
+    "email": "email",
+    "password": "password",
+    "confirmPassword": "confirm password",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "forgotPassword": "Forgot your password?",
+    "loggingIn": "Logging in...",
+    "register": "Register",
+    "registering": "Registering..."
+  },
+  "courses": {
+    "title": "Courses",
+    "createNewCourse": "Create new course"
+  },
+  "settings": {
+    "updateProfile": "Update Profile",
+    "changePassword": "Change Password",
+    "currentPassword": "Current Password",
+    "newPassword": "New Password",
+    "confirmNewPassword": "Confirm New Password",
+    "emailAddress": "Email Address"
+  },
+  "common": {
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "name": "Name",
+    "description": "Description"
+  }
+}
