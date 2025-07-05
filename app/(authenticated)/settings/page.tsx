@@ -20,6 +20,7 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { useTranslation } from "@/lib/i18n/context";
 
 const profileSchema = z.object({
     firstName: z.string().min(1, "First name is required"),
@@ -36,6 +37,7 @@ const passwordSchema = z.object({
 });
 
 export default function SettingsPage() {
+    const { t } = useTranslation();
     const [deleting, setDeleting] = useState(false);
     const [deleteError, setDeleteError] = useState<string | null>(null);
     const [passwordError, setPasswordError] = useState<string | null>(null);
@@ -122,7 +124,7 @@ export default function SettingsPage() {
                             control={profileForm.control}
                             name="firstName"
                             render={({field}) => (<FormItem>
-                                    <FormLabel>First Name</FormLabel>
+                                    <FormLabel>{t('auth.firstName')}</FormLabel>
                                     <FormControl>
                                         <Input type="text" {...field} />
                                     </FormControl>
@@ -133,7 +135,7 @@ export default function SettingsPage() {
                             control={profileForm.control}
                             name="lastName"
                             render={({field}) => (<FormItem>
-                                    <FormLabel>Last Name</FormLabel>
+                                    <FormLabel>{t('auth.lastName')}</FormLabel>
                                     <FormControl>
                                         <Input type="text" {...field} />
                                     </FormControl>
@@ -146,18 +148,18 @@ export default function SettingsPage() {
                         control={profileForm.control}
                         name="email"
                         render={({field}) => (<FormItem>
-                                <FormLabel>Email Address</FormLabel>
+                                <FormLabel>{t('settings.emailAddress')}</FormLabel>
                                 <FormControl>
                                     <Input type="email" {...field} />
                                 </FormControl>
                                 <FormMessage/>
                             </FormItem>)}
                     />
-                    <Button type="submit" className="w-full md:w-auto">Update Profile</Button>
+                    <Button type="submit" className="w-full md:w-auto">{t('settings.updateProfile')}</Button>
                 </form>
             </Form>
             <div className="mt-12 border-t pt-8">
-                <h2 className="text-lg font-semibold mb-4">Change Password</h2>
+                <h2 className="text-lg font-semibold mb-4">{t('settings.changePassword')}</h2>
                 <Form {...passwordForm}>
                     <form onSubmit={passwordForm.handleSubmit(onPasswordSubmit)} className="space-y-8">
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -165,7 +167,7 @@ export default function SettingsPage() {
                                 control={passwordForm.control}
                                 name="password"
                                 render={({field}) => (<FormItem>
-                                        <FormLabel>Current Password</FormLabel>
+                                        <FormLabel>{t('settings.currentPassword')}</FormLabel>
                                         <FormControl>
                                             <Input type="password" autoComplete="current-password" {...field} />
                                         </FormControl>
@@ -176,7 +178,7 @@ export default function SettingsPage() {
                                 control={passwordForm.control}
                                 name="newPassword"
                                 render={({field}) => (<FormItem>
-                                        <FormLabel>New Password</FormLabel>
+                                        <FormLabel>{t('settings.newPassword')}</FormLabel>
                                         <FormControl>
                                             <Input type="password" autoComplete="new-password" {...field} />
                                         </FormControl>
@@ -187,7 +189,7 @@ export default function SettingsPage() {
                                 control={passwordForm.control}
                                 name="confirmNewPassword"
                                 render={({field}) => (<FormItem>
-                                        <FormLabel>Confirm New Password</FormLabel>
+                                        <FormLabel>{t('settings.confirmNewPassword')}</FormLabel>
                                         <FormControl>
                                             <Input type="password" autoComplete="new-password" {...field} />
                                         </FormControl>

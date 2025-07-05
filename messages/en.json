@@ -7,6 +7,11 @@
     "loginButton": "Login",
     "loginDescription": "Enter your email and password to sign in to your account.",
     "signUp": "Sign Up",
+    "register": "Register",
+    "registerTitle": "Create a new account", 
+    "registerDescription": "Enter your email, password, and personal details to create a new account.",
+    "registerButton": "Register",
+    "logIn": "Log In",
     "email": "email",
     "password": "password",
     "confirmPassword": "confirm password",
@@ -14,7 +19,6 @@
     "lastName": "Last Name",
     "forgotPassword": "Forgot your password?",
     "loggingIn": "Logging in...",
-    "register": "Register",
     "registering": "Registering..."
   },
   "courses": {

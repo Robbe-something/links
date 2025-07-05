@@ -7,6 +7,11 @@
     "loginButton": "Inloggen",
     "loginDescription": "Voer je e-mailadres en wachtwoord in om in te loggen op je account.",
     "signUp": "Registreren",
+    "register": "Registreren",
+    "registerTitle": "Nieuw account aanmaken",
+    "registerDescription": "Voer je e-mail, wachtwoord en persoonlijke gegevens in om een nieuw account aan te maken.",
+    "registerButton": "Registreren",
+    "logIn": "Inloggen",
     "email": "e-mail",
     "password": "wachtwoord",
     "confirmPassword": "bevestig wachtwoord",
@@ -14,7 +19,6 @@
     "lastName": "Achternaam",
     "forgotPassword": "Wachtwoord vergeten?",
     "loggingIn": "Inloggen...",
-    "register": "Registreren",
     "registering": "Registreren..."
   },
   "courses": {
