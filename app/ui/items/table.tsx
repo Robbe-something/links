@@ -21,6 +21,7 @@ export default function ItemsTable({course_id, isLecturer}: {course_id: string, 
                 description,
                 link,
                 visible,
+                parent,
                 type (
                     name
                 )
@@ -34,6 +35,7 @@ export default function ItemsTable({course_id, isLecturer}: {course_id: string, 
         description: string | null
         link: string | null
         visible: boolean
+        parent: string | null
         type: {
             name: string
         }
@@ -70,6 +72,7 @@ export default function ItemsTable({course_id, isLecturer}: {course_id: string, 
         description: string | null
         link: string | null
         visible: boolean
+        parent: string | null
         type: { name: string }
     }) => {
         if (item.type.name === 'FOLDER') {
@@ -131,7 +134,8 @@ export default function ItemsTable({course_id, isLecturer}: {course_id: string, 
         type: string;
         visible: boolean;
         link?: string;
-    }) => {
+        parent?: string;
+    }, itemId?: string) => {
         try {
             // Create new item with current parent
             const { data, error } = await supabase
@@ -142,7 +146,7 @@ export default function ItemsTable({course_id, isLecturer}: {course_id: string, 
                     type: parseInt(formData.type),
                     visible: formData.visible,
                     link: formData.link || null,
-                    parent: parent,
+                    parent: formData.parent === 'null' ? null : formData.parent || parent,
                     course: course_id
                 })
                 .select();
@@ -189,6 +193,7 @@ export default function ItemsTable({course_id, isLecturer}: {course_id: string, 
         type: string;
         visible: boolean;
         link?: string;
+        parent?: string;
     }, itemId: string) => {
         try {
             // Update the existing item
@@ -199,7 +204,8 @@ export default function ItemsTable({course_id, isLecturer}: {course_id: string, 
                     description: formData.description || null,
                     type: parseInt(formData.type),
                     visible: formData.visible,
-                    link: formData.link || null
+                    link: formData.link || null,
+                    parent: formData.parent === 'null' ? null : formData.parent
                 })
                 .eq('id', itemId)
                 .select();
@@ -272,7 +278,7 @@ export default function ItemsTable({course_id, isLecturer}: {course_id: string, 
                             {isLecturer && (
                                 <TableHead className="w-20 text-right">
                                 <div className="flex justify-end">
-                                    <ItemDialog creating={true} asChild onSave={saveNewItem}>
+                                    <ItemDialog creating={true} asChild onSave={saveNewItem} course_id={course_id} item={{parent: parent}}>
                                         <button
                                             className={`transition-opacity duration-200 p-1 rounded hover:bg-gray-200 flex items-center cursor-pointer disabled:cursor-default opacity-100 cursor-pointer`}
                                             aria-label="Create new Item"
@@ -296,6 +302,7 @@ export default function ItemsTable({course_id, isLecturer}: {course_id: string, 
                             onToggleVisibility={toggleVisibility}
                             onDeleteItem={deleteItem}
                             onEditItem={updateItem}
+                            course_id={course_id}
                         />
                     ))}
                 </TableBody>
