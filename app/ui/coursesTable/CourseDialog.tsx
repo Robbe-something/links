@@ -142,7 +142,7 @@ export default function CourseDialog({
 
     // Add email to the list, fetch userId
     const handleAddEmail = async () => {
-        const email = emailInput.trim();
+        const email = emailInput.trim().toLowerCase();
         if (!email) return;
         try {
             // Validate email using zod
