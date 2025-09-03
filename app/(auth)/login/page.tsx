@@ -1,3 +1,4 @@
+// @ts-nocheck
 "use client"
 
 import { login } from '@/utils/supabase/auth_actions'

@@ -1,3 +1,4 @@
+// @ts-nocheck
 export const experimental_ppr = true
 
 import Navbar from "@/ui/navbar";

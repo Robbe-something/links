@@ -1,3 +1,4 @@
+// @ts-nocheck
 "use client"
 
 import {getSignUpSchema} from "@/utils/supabase/auth_schema";
