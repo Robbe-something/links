@@ -42,6 +42,8 @@ export default async function Page({
             </>)
     }
 
+    data = data as { id: string, name: string }
+
     const course_id = data.id
 
     const l = await supabase.from('item')
