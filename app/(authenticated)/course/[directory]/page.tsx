@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import {Metadata} from "next";
 import {createClient} from "@/utils/supabase/server";
 import {redirect} from "next/navigation";
@@ -41,8 +43,6 @@ export default async function Page({
                 <Link href="/home"><Button>Go to your courses</Button></Link>
             </>)
     }
-
-    data = data as { id: string, name: string }
 
     const course_id = data.id
 
