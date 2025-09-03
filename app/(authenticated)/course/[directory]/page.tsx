@@ -22,14 +22,21 @@ export default async function Page({
 
     const supabase = await createClient()
 
+    type Course = {
+        id: string,
+        name: string,
+        description: string,
+    }
+
     let {data, error} = await supabase.from('course')
         .select(`
             id,
-            name
+            name,
+            description
         `)
         .eq('name', course)
         .limit(1)
-        .maybeSingle()
+        .maybeSingle<Course>()
 
     if (error) {
         redirect('/error')
