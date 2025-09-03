@@ -42,7 +42,7 @@ export default async function Page({
             </>)
     }
 
-    const course_id = data?.id
+    const course_id = data.id
 
     const l = await supabase.from('item')
         .select(`
