@@ -4,7 +4,7 @@
 
 ## Overview
 
-**Links** is a web application for organizing, sharing, and managing collections of links and documents, designed with education and collaborative environments in mind. Built with [Next.js](https://nextjs.org) and [TypeScript](https://www.typescriptlang.org/), it leverages [Supabase](https://supabase.com/) for authentication and database services.
+**Links** is a web application fo r organizing, sharing, and managing collections of links and documents, designed with education and collaborative environments in mind. Built with [Next.js](https://nextjs.org) and [TypeScript](https://www.typescriptlang.org/), it leverages [Supabase](https://supabase.com/) for authentication and database services.
 
 ## Features
 
