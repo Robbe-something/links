@@ -25,7 +25,8 @@ export default function ItemsRow({
     isLecturer,
     onToggleVisibility,
     onDeleteItem,
-    onEditItem
+    onEditItem,
+    course_id
 }: {
     item: {
         id: string
@@ -33,6 +34,7 @@ export default function ItemsRow({
         description: string | null
         link: string | null
         visible: boolean
+        parent: string | null
         type: {
             name: string
         }
@@ -43,6 +45,7 @@ export default function ItemsRow({
         description: string | null
         link: string | null
         visible: boolean
+        parent: string | null
         type: {
             name: string
         }
@@ -56,7 +59,9 @@ export default function ItemsRow({
         type: string;
         visible: boolean;
         link?: string;
-    }, itemId: string) => Promise<void>
+        parent?: string;
+    }, itemId: string) => Promise<void>,
+    course_id: string
 }) {
     const isHyperlink = item.type.name === 'HYPERLINK';
     const [hovered, setHovered] = useState(false);
@@ -102,6 +107,7 @@ export default function ItemsRow({
         type: string;
         visible: boolean;
         link?: string;
+        parent?: string;
     }, itemId?: string) => {
         if (onEditItem && itemId) {
             // Call and ignore the returned promise
@@ -141,7 +147,7 @@ export default function ItemsRow({
                         >
                             {item.visible ? <EyeOff size={18} /> : <Eye size={18} />}
                         </button>
-                        <ItemDialog creating={false} asChild onSave={handleEditItem} item={item}>
+                        <ItemDialog creating={false} asChild onSave={handleEditItem} item={item} course_id={course_id}>
                             <button
                                 className="transition-opacity duration-200 p-1 rounded hover:bg-gray-200 flex items-center cursor-pointer"
                                 aria-label="Edit item"

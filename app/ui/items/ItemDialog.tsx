@@ -25,34 +25,39 @@ const formSchema = z.object({
     description: z.string().optional(),
     type: z.string().min(1, "Type is required"),
     visible: z.boolean(),
-    link: z.string().optional()
+    link: z.string().optional(),
+    parent: z.string().optional()
 });
 
 export default function ItemDialog({
-    children, 
-    creating, 
-    asChild, 
+    children,
+    creating,
+    asChild,
     onSave,
-    item
+    item,
+    course_id
 }: {
-    children: React.ReactNode, 
-    creating: boolean, 
+    children: React.ReactNode,
+    creating: boolean,
     asChild?: boolean | undefined,
     onSave?: (data: z.infer<typeof formSchema>, itemId?: string) => void,
-    item?: {
+    item?: Partial<{
         id: string
         title: string
         description: string | null
         link: string | null
         visible: boolean
+        parent: string | null
         type: {
             name: string
             id?: number
         }
-    }
+    }>,
+    course_id: string
 }) {
     const supabase = createClient();
     const [docTypes, setDocTypes] = useState<{id: number, name: string}[]>([]);
+    const [folders, setFolders] = useState<{id: string, title: string}[]>([]);
     const [selectedType, setSelectedType] = useState<string>("");
     const [open, setOpen] = useState(false);
 
@@ -64,11 +69,12 @@ export default function ItemDialog({
             description: "",
             type: "",
             visible: true,
-            link: ""
+            link: "",
+            parent: ""
         }
     });
 
-    // Fetch document types
+    // Fetch document types and folders
     useEffect(() => {
         const fetchDocTypes = async () => {
             const {data, error} = await supabase
@@ -82,64 +88,75 @@ export default function ItemDialog({
 
             setDocTypes(data || []);
 
-            // Set default type if available and not editing
             if (data && data.length > 0 && !item) {
                 form.setValue('type', data[0].id.toString());
                 setSelectedType(data[0].id.toString());
             }
         };
 
-        fetchDocTypes();
-    }, []);
+        const fetchFolders = async () => {
+            const {data, error} = await supabase
+                .from('item')
+                .select('id, title')
+                .eq('course', course_id)
+                .eq('type', 1) // Assuming 1 is the ID for FOLDER type
 
-    // Prefill form when editing an existing item
-    useEffect(() => {
-        if (item && open) {
-            // Find the type ID from the type name
-            const typeId = docTypes.find(type => type.name === item.type.name)?.id;
-
-            // Reset form with item data
-            form.reset({
-                title: item.title,
-                description: item.description || "",
-                type: typeId ? typeId.toString() : "",
-                visible: item.visible,
-                link: item.link || ""
-            });
-
-            if (typeId) {
-                setSelectedType(typeId.toString());
+            if (error) {
+                console.error('Error fetching folders:', error);
+                return;
             }
-        } else if (!item && open) {
-            // Reset form when creating a new item
-            form.reset({
-                title: "",
-                description: "",
-                type: docTypes.length > 0 ? docTypes[0].id.toString() : "",
-                visible: true,
-                link: ""
-            });
+            setFolders(data || []);
+        }
 
-            if (docTypes.length > 0) {
-                setSelectedType(docTypes[0].id.toString());
+        fetchDocTypes();
+        fetchFolders();
+    }, [course_id]);
+
+    useEffect(() => {
+        if (open) {
+            if (creating) {
+                form.reset({
+                    title: "",
+                    description: "",
+                    type: docTypes.length > 0 ? docTypes[0].id.toString() : "",
+                    visible: true,
+                    link: "",
+                    parent: item?.parent || "null"
+                });
+
+                if (docTypes.length > 0) {
+                    setSelectedType(docTypes[0].id.toString());
+                }
+            } else if (item) {
+                const typeId = docTypes.find(type => type.name === item.type?.name)?.id;
+
+                form.reset({
+                    title: item.title,
+                    description: item.description || "",
+                    type: typeId ? typeId.toString() : "",
+                    visible: item.visible,
+                    link: item.link || "",
+                    parent: item.parent || "null"
+                });
+
+                if (typeId) {
+                    setSelectedType(typeId.toString());
+                }
             }
         }
-    }, [item, open, docTypes]);
+    }, [item, open, docTypes, creating]);
 
-    // Handle form submission
     const onSubmit = (data: z.infer<typeof formSchema>) => {
         if (onSave) {
-            // Pass item ID if editing an existing item
-            if (item) {
-                onSave(data, item.id);
-            } else {
+            if (creating) {
                 onSave(data);
+            } else if (item?.id) {
+                onSave(data, item.id);
             }
-            setOpen(false); // Close the dialog after saving
+            setOpen(false);
         }
     };
 
-    // Watch for type changes to conditionally show link field
     const watchType = form.watch("type");
     const isHyperlink = docTypes.find(type => type.id.toString() === watchType)?.name === 'HYPERLINK';
 
@@ -190,7 +207,7 @@ export default function ItemDialog({
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Type</FormLabel>
-                                    <Select 
+                                    <Select
                                         onValueChange={(value) => {
                                             field.onChange(value);
                                             setSelectedType(value);
@@ -230,6 +247,35 @@ export default function ItemDialog({
                                 )}
                             />
                         )}
+
+                        <FormField
+                            control={form.control}
+                            name="parent"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Folder</FormLabel>
+                                    <Select
+                                        onValueChange={field.onChange}
+                                        defaultValue={field.value}
+                                    >
+                                        <FormControl>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Select a folder" />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            <SelectItem value="null">Root</SelectItem>
+                                            {folders.map((folder) => (
+                                                <SelectItem key={folder.id} value={folder.id}>
+                                                    {folder.title}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
 
                         <FormField
                             control={form.control}
